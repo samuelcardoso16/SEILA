@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Usuario, Produto
+from models import Base, Pedido, Usuario, Produto
 
 app = Flask(__name__)
 CORS(app)
@@ -214,6 +214,43 @@ def deletar_produto(id):
     return jsonify({
         "message": "Produto deletado com sucesso!"
     }), 200
+
+@app.route('/pedidos/<int:id>', methods=['GET'])
+def get_pedidos(id):
+    s = Session()
+    pedido = s.query(Usuario).get(id) 
+    
+    if not pedido:
+        return jsonify({'erro': 'Pedido não encontrado'}), 404
+        
+    return jsonify({
+        'id': pedido.id, 
+        'quantidade': pedido.quantidade, 
+        'total': pedido.total, 
+        'usuario_id': pedido.usuario_id, 
+        'produto_id': pedido.produto_id
+    })
+
+
+from flask import Flask, request, jsonify
+
+@app.route('/pedidos/<int:id>', methods=['POST'])
+def add_pedidos(id):
+    s = Session()
+    data = request.json
+    prod_info = s.query(Produto).get(data['produto_id'])
+    
+    pedido = Pedido(
+        quantidade=data['quantidade'], 
+        total=data['total'], 
+        usuario_id=data['usuario_id'],
+        produto_id=data['produto_id']
+    )
+    
+    s.add(pedido)
+    s.commit()
+    return jsonify({'message': 'Pedido cadastrado com sucesso!'})
+
 
 
 if __name__ == "__main__":
