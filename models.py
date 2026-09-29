@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, Float, String
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, Integer, Float, String, ForeignKey
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
@@ -19,3 +19,15 @@ class Produto(Base):
     nome=Column(String)
     preco=Column(Float)
     quantidade=Column(Integer)
+
+class Pedido(Base): 
+    __tablename__="pedido"
+    id= Column(Integer, primary_key=True)
+    quantidade=Column(Integer)
+    total=Column(Float)
+
+    usuario_id=Column(Integer, ForeignKey("usuario.id"))
+    produto_id=Column(Integer, ForeignKey("produto.id"))
+
+    usuario= relationship("Usuario", back_populates="pedidos")
+    produto= relationship("Produto", back_populates="pedidos")
