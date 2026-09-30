@@ -10,9 +10,23 @@ async function carregarUsuarios(){
         const tbody= document.querySelector("#tabelaUsuarios tbody")
 
         tbody.innerHTML =""
-    } catch (error) {
-        
-    }
 
+        usuarios.forEach(user =>{
+                const tr = document.createElement("tr")
+                tr.innerHTML= `
+                    <td>${user.id}</td>
+                    <td>${user.nome}</td>
+                    <td>${user.email}</td>
+                    <td>${user.idade}</td>
+                    <td>${user.altura}</td>
+                    <td>
+                        <a class= "btn btn-danger">Apagar</a>
+                    </td>
+                `
+                tbody.appendChild(tr)
+        });
+    } catch (error) {
+        alert("Error: " + error.message)
+    }
 
 }
