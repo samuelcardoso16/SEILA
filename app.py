@@ -239,17 +239,64 @@ def add_pedidos(id):
     s = Session()
     data = request.json
     prod_info = s.query(Produto).get(data['produto_id'])
-    
+
     pedido = Pedido(
         quantidade=data['quantidade'], 
         total=data['total'], 
         usuario_id=data['usuario_id'],
         produto_id=data['produto_id']
     )
-    
+
     s.add(pedido)
     s.commit()
-    return jsonify({'message': 'Pedido cadastrado com sucesso!'})
+
+    return jsonify({
+        'message': 'Pedido cadastrado com sucesso!'
+    })
+
+
+@app.route('/pedidos/<int:id>', methods=['PUT'])
+def atualizar_pedido(id):
+    s = Session()
+
+    pedido = s.query(Pedido).get(id)
+
+    if pedido is None:
+        return jsonify({
+            "message": "Pedido não encontrado!"
+        }), 404
+
+    data = request.json
+
+    pedido.quantidade = data["quantidade"]
+    pedido.total = data["total"]
+    pedido.usuario_id = data["usuario_id"]
+    pedido.produto_id = data["produto_id"]
+
+    s.commit()
+
+    return jsonify({
+        "message": "Pedido atualizado com sucesso!"
+    }), 200
+
+
+@app.route('/pedidos/<int:id>', methods=['DELETE'])
+def deletar_pedido(id):
+    s = Session()
+
+    pedido = s.query(Pedido).get(id)
+
+    if pedido is None:
+        return jsonify({
+            "message": "Pedido não encontrado!"
+        }), 404
+
+    s.delete(pedido)
+    s.commit()
+
+    return jsonify({
+        "message": "Pedido deletado com sucesso!"
+    }), 200
 
 
 
