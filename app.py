@@ -15,9 +15,7 @@ Session = sessionmaker(bind=engine)
 @app.route("/usuarios", methods=["GET"])
 def get_usuarios():
     s = Session()
-
     usuarios = s.query(Usuario).all()
-
     return jsonify([
         {
             "id": u.id,
@@ -33,13 +31,10 @@ def get_usuarios():
 @app.route("/usuarios/<int:id>", methods=["GET"])
 def get_usuario_unico(id):
     s = Session()
-
-    usuario = s.query(Usuario).get(id)
+    usuario = s.get(Usuario, id)
 
     if usuario is None:
-        return jsonify({
-            "message": "Usuário não encontrado!"
-        }), 404
+        return jsonify({"message": "Usuário não encontrado!"}), 404
 
     return jsonify({
         "id": usuario.id,
@@ -53,7 +48,6 @@ def get_usuario_unico(id):
 @app.route("/usuarios", methods=["POST"])
 def add_usuario():
     s = Session()
-
     data = request.json
 
     u = Usuario(
@@ -65,22 +59,16 @@ def add_usuario():
 
     s.add(u)
     s.commit()
-
-    return jsonify({
-        "message": "Usuário cadastrado com sucesso!"
-    }), 201
+    return jsonify({"message": "Usuário cadastrado com sucesso!"}), 201
 
 
 @app.route("/usuarios/<int:id>", methods=["PUT"])
 def atualizar_usuario(id):
     s = Session()
-
-    usuario = s.query(Usuario).get(id)
+    usuario = s.get(Usuario, id)
 
     if usuario is None:
-        return jsonify({
-            "message": "Usuário não encontrado!"
-        }), 404
+        return jsonify({"message": "Usuário não encontrado!"}), 404
 
     data = request.json
 
@@ -90,35 +78,25 @@ def atualizar_usuario(id):
     usuario.altura = data["altura"]
 
     s.commit()
-
-    return jsonify({
-        "message": "Usuário atualizado com sucesso!"
-    }), 200
+    return jsonify({"message": "Usuário updated com sucesso!"}), 200
 
 
 @app.route("/usuarios/<int:id>", methods=["DELETE"])
 def deletar_usuario(id):
     s = Session()
-
-    usuario = s.query(Usuario).get(id)
+    usuario = s.get(Usuario, id)
 
     if usuario is None:
-        return jsonify({
-            "message": "Usuário não encontrado!"
-        }), 404
+        return jsonify({"message": "Usuário não encontrado!"}), 404
 
     s.delete(usuario)
     s.commit()
-
-    return jsonify({
-        "message": "Usuário deletado com sucesso!"
-    }), 200
+    return jsonify({"message": "Usuário deletado com sucesso!"}), 200
 
 
 @app.route("/produtos", methods=["POST"])
 def adicionar_produto():
     s = Session()
-
     data = request.json
 
     produto = Produto(
@@ -129,18 +107,13 @@ def adicionar_produto():
 
     s.add(produto)
     s.commit()
-
-    return jsonify({
-        "message": "Produto cadastrado com sucesso!"
-    }), 201
+    return jsonify({"message": "Produto cadastrado com sucesso!"}), 201
 
 
 @app.route("/produtos", methods=["GET"])
 def listar_produtos():
     s = Session()
-
     produtos = s.query(Produto).all()
-
     resultado = []
 
     for produto in produtos:
@@ -154,16 +127,13 @@ def listar_produtos():
     return jsonify(resultado)
 
 
-@app.route("/produtos/<int:id>", methods=["GET"])
+@app.route("/produtos/<int:id>", methods=["POST"])
 def buscar_produto(id):
     s = Session()
-
-    produto = s.query(Produto).get(id)
+    produto = s.get(Produto, id)
 
     if produto is None:
-        return jsonify({
-            "message": "Produto não encontrado!"
-        }), 404
+        return jsonify({"message": "Produto não encontrado!"}), 404
 
     return jsonify({
         "id": produto.id,
@@ -176,13 +146,10 @@ def buscar_produto(id):
 @app.route("/produtos/<int:id>", methods=["PUT"])
 def atualizar_produto(id):
     s = Session()
-
-    produto = s.query(Produto).get(id)
+    produto = s.get(Produto, id)
 
     if produto is None:
-        return jsonify({
-            "message": "Produto não encontrado!"
-        }), 404
+        return jsonify({"message": "Produto não encontrado!"}), 404
 
     data = request.json
 
@@ -191,38 +158,27 @@ def atualizar_produto(id):
     produto.quantidade = data["quantidade"]
 
     s.commit()
-
-    return jsonify({
-        "message": "Produto atualizado com sucesso!"
-    }), 200
+    return jsonify({"message": "Produto atualizado com sucesso!"}), 200
 
 
 @app.route("/produtos/<int:id>", methods=["DELETE"])
 def deletar_produto(id):
     s = Session()
-
-    produto = s.query(Produto).get(id)
+    produto = s.get(Produto, id)
 
     if produto is None:
-        return jsonify({
-            "message": "Produto não encontrado!"
-        }), 404
+        return jsonify({"message": "Produto não encontrado!"}), 404
 
     s.delete(produto)
     s.commit()
+    return jsonify({"message": "Produto deletado com sucesso!"}), 200
 
-    return jsonify({
-        "message": "Produto deletado com sucesso!"
-    }), 200
 
 @app.route('/pedidos/<int:id>', methods=['GET'])
-def get_pedidos(id):
+def get_unique_pedidos(id):
     s = Session()
-    pedido = s.query(Usuario).get(id) 
+    pedido = s.query(Pedido).get(id) 
     
-    if not pedido:
-        return jsonify({'erro': 'Pedido não encontrado'}), 404
-        
     return jsonify({
         'id': pedido.id, 
         'quantidade': pedido.quantidade, 
@@ -232,8 +188,6 @@ def get_pedidos(id):
     })
 
 
-from flask import Flask, request, jsonify
-
 @app.route('/pedidos/<int:id>', methods=['POST'])
 def add_pedidos(id):
     s = Session()
@@ -242,7 +196,7 @@ def add_pedidos(id):
 
     pedido = Pedido(
         quantidade=data['quantidade'], 
-        total=data['total'], 
+        total=prod_info.preco*data["quantidade"], 
         usuario_id=data['usuario_id'],
         produto_id=data['produto_id']
     )
@@ -289,7 +243,7 @@ def deletar_pedido(id):
     if pedido is None:
         return jsonify({
             "message": "Pedido não encontrado!"
-        }), 404
+        }), 
 
     s.delete(pedido)
     s.commit()
@@ -297,8 +251,6 @@ def deletar_pedido(id):
     return jsonify({
         "message": "Pedido deletado com sucesso!"
     }), 200
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)
