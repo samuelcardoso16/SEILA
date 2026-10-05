@@ -1,0 +1,27 @@
+#criar api
+ python -m venv api
+
+#consultar api
+cd api 
+
+#ativar
+Scripts\activate
+
+#desativar
+deactivate
+
+#Como o ambiente atual está quebrado, vamos criar outro chamado .venv:
+python -m venv .venv
+
+#Ative o novo ambiente
+.\.venv\Scripts\activate
+
+#o que e preciso baixar
+pip install  flask flask-cors sqlalchemy
+
+#Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+#Verificar erro
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+bootstrap
