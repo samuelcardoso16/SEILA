@@ -1,6 +1,6 @@
 const API_URL = "http://127.0.0.1:5000";
 
-async function CriarUsuario(){
+async function criarUsuarios(){
     try {
         let formNome= document.getElementById('usuario_nome').value
         let formEmail= document.getElementById('usuario_email').value
