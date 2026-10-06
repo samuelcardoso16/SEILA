@@ -186,9 +186,24 @@ def get_unique_pedidos(id):
         'usuario_id': pedido.usuario_id, 
         'produto_id': pedido.produto_id
     })
+@app.route('/pedidos', methods=['GET'])
+def get_all_pedidos():
+    s = Session()
+    pedidos_db = s.query(Pedido).all() 
+    
+    lista_pedidos = []
+    for pedido in pedidos_db:
+        lista_pedidos.append({
+            'id': pedido.id, 
+            'quantidade': pedido.quantidade, 
+            'total': pedido.total, 
+            'usuario_id': pedido.usuario_id, 
+            'produto_id': pedido.produto_id
+        })       
+    return jsonify(lista_pedidos)
 
 
-@app.route('/pedidos/<int:id>', methods=['POST'])
+@app.route('/pedidos', methods=['POST'])
 def add_pedidos(id):
     s = Session()
     data = request.json
@@ -218,7 +233,7 @@ def atualizar_pedido(id):
     if pedido is None:
         return jsonify({
             "message": "Pedido não encontrado!"
-        }), 404
+        }), 
 
     data = request.json
 
@@ -231,8 +246,7 @@ def atualizar_pedido(id):
 
     return jsonify({
         "message": "Pedido atualizado com sucesso!"
-    }), 200
-
+    }),
 
 @app.route('/pedidos/<int:id>', methods=['DELETE'])
 def deletar_pedido(id):
@@ -250,7 +264,7 @@ def deletar_pedido(id):
 
     return jsonify({
         "message": "Pedido deletado com sucesso!"
-    }), 200
+    }), 
 
 if __name__ == "__main__":
     app.run(debug=True)
