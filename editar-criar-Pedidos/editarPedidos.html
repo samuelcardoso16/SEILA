@@ -1,47 +1,135 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+        crossorigin="anonymous">
+
     <title>Editar Pedido</title>
 </head>
 
 <body>
+
     <div class="container mt-5">
+
         <h1 class="mb-4">Editar Pedido</h1>
 
         <form id="form-editar-pedido">
-            <div class="mb-3">
-                <label class="form-label">Quantidade</label>
-                <input type="number" class="form-control" id="editar_quantidade" required>
-            </div>
 
             <div class="mb-3">
-                <label class="form-label">Total</label>
-                <input type="number" class="form-control" id="editar_total" step="0.01" required>
+                <label for="editar_quantidade" class="form-label">
+                    Quantidade
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    id="editar_quantidade"
+                    min="1"
+                    required
+                >
             </div>
+
 
             <div class="mb-3">
-                <label class="form-label">Selecione o Usuário</label>
-                <select class="form-select" id="editar_id_usuario" required>
-                    <option value="">Carregando usuários...</option>
-                </select>
+                <label for="editar_total" class="form-label">
+                    Total
+                </label>
+
+                <input
+                    type="number"
+                    class="form-control"
+                    id="editar_total"
+                    step="0.01"
+                    min="0"
+                    required
+                >
             </div>
+
 
             <div class="mb-3">
-                <label class="form-label">Selecione o Produto</label>
-                <select class="form-select" id="editar_id_produto" required>
-                    <option value="">Carregando produtos...</option>
-                </select>
+
+                <label for="buscar_usuario" class="form-label">
+                    Usuário
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="buscar_usuario"
+                    list="lista_usuarios"
+                    placeholder="Digite o nome do usuário"
+                    required
+                >
+
+                <datalist id="lista_usuarios"></datalist>
+
+                <input
+                    type="hidden"
+                    id="editar_usuario_id"
+                >
+
             </div>
 
-            <button type="button" class="btn btn-primary" onclick="atualizarPedido()">Salvar Alterações</button>
-            <a href="pedidos.html" class="btn btn-secondary">Cancelar</a>
+
+            <div class="mb-3">
+
+                <label for="buscar_produto" class="form-label">
+                    Produto
+                </label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    id="buscar_produto"
+                    list="lista_produtos"
+                    placeholder="Digite o nome do produto"
+                    required
+                >
+
+                <datalist id="lista_produtos"></datalist>
+
+                <input
+                    type="hidden"
+                    id="editar_produto_id"
+                >
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="atualizarPedido()"
+            >
+                Salvar Alterações
+            </button>
+
+            <a
+                href="pedidos.html"
+                class="btn btn-secondary"
+            >
+                Cancelar
+            </a>
+
         </form>
+
     </div>
 
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous">
+    </script>
+
+    <script src="editarPedidos.js"></script>
+
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-<script src="editarPedidos.js"></script>
+
 </html>
