@@ -1,28 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <title>Document</title>
+    <title>Lista de Usuários</title>
 </head>
 <body>
-    <h1>Lista de Usuários</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4">Lista de Usuários</h1>
 
-    <table class="table" id="tabelaUsuarios">
-        <thead>
-            <tr>
-                <th scop="col">#</th>
-                <th scop="col">Nome</th>
-                <th scop="col">Email</th>
-                <th scop="col">Idade</th>
-                <th scop="col">Altura</th>
-                <th scop="col">Ações</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+        <a class="btn btn-primary mb-3" href="criarUsuario.html" role="button"> + Usuário</a>
+
+        <table class="table" id="tabelaUsuarios">
+            <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Idade</th>
+                    <th scope="col">Altura</th>
+                    <th scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-<script src="usuarios.js"> </script>
+<script src="usuarios.js"></script>
 </html>
