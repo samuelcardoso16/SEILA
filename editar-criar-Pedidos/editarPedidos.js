@@ -1,7 +1,7 @@
 const API_URL = "http://127.0.0.1:5000";
 
 const urlParams = new URLSearchParams(window.location.search);
-const pedido_id = urlParams.get('id');
+const pedido_id = urlParams.get("id");
 
 async function iniciarPagina() {
     if (!pedido_id) {
@@ -18,115 +18,208 @@ async function iniciarPagina() {
 async function carregarSugestoesUsuarios() {
     try {
         const response = await fetch(`${API_URL}/usuarios`);
-        if (!response.ok) throw new Error("Erro ao carregar lista de usuários");
-        
+
+        if (!response.ok) {
+            throw new Error("Erro ao carregar usuários");
+        }
+
         const usuarios = await response.json();
         const datalist = document.getElementById("lista_usuarios");
+
         datalist.innerHTML = "";
 
-        usuarios.forEach(user => {
+        usuarios.forEach(usuario => {
             const option = document.createElement("option");
-            option.value = user.nome;
-            option.setAttribute("data-id", user.id);
+            option.value = usuario.nome;
+            option.dataset.id = usuario.id;
             datalist.appendChild(option);
         });
+
     } catch (error) {
         console.error(error);
+        alert("Erro ao carregar os usuários.");
     }
 }
 
 async function carregarSugestoesProdutos() {
     try {
         const response = await fetch(`${API_URL}/produtos`);
-        if (!response.ok) throw new Error("Erro ao carregar lista de produtos");
-        
+
+        if (!response.ok) {
+            throw new Error("Erro ao carregar produtos");
+        }
+
         const produtos = await response.json();
         const datalist = document.getElementById("lista_produtos");
+
         datalist.innerHTML = "";
 
-        produtos.forEach(prod => {
+        produtos.forEach(produto => {
             const option = document.createElement("option");
-            option.value = prod.nome;
-            option.setAttribute("data-id", prod.id);
+            option.value = produto.nome;
+            option.dataset.id = produto.id;
             datalist.appendChild(option);
         });
+
     } catch (error) {
         console.error(error);
+        alert("Erro ao carregar os produtos.");
     }
 }
 
 async function carregarDadosPedido() {
     try {
         const response = await fetch(`${API_URL}/pedidos/${pedido_id}`);
-        if (!response.ok) throw new Error("Erro ao buscar dados do pedido");
-        
+
+        if (!response.ok) {
+            throw new Error("Erro ao buscar dados do pedido");
+        }
+
         const pedido = await response.json();
 
-        document.getElementById('editar_quantidade').value = pedido.quantidade || 0;
-        document.getElementById('editar_total').value = pedido.total || 0;
-        
-        // Sincronizado para buscar os IDs com a grafia correta do HTML
-        document.getElementById('editar_usuario_id').value = pedido.usuario_id || "";
-        document.getElementById('editar_produto_id').value = pedido.produto_id || "";
+        document.getElementById("editar_quantidade").value =
+            pedido.quantidade ?? "";
+
+        document.getElementById("editar_total").value =
+            pedido.total ?? "";
+
+        document.getElementById("editar_usuario_id").value =
+            pedido.usuario_id ?? "";
+
+        document.getElementById("editar_produto_id").value =
+            pedido.produto_id ?? "";
 
         if (pedido.usuario_id) {
-            const optUser = document.querySelector(`#lista_usuarios option[data-id="${pedido.usuario_id}"]`);
-            if (optUser) document.getElementById('buscar_usuario').value = optUser.value;
+            const opcaoUsuario = document.querySelector(
+                `#lista_usuarios option[data-id="${pedido.usuario_id}"]`
+            );
+
+            if (opcaoUsuario) {
+                document.getElementById("buscar_usuario").value =
+                    opcaoUsuario.value;
+            }
         }
 
         if (pedido.produto_id) {
-            const optProd = document.querySelector(`#lista_produtos option[data-id="${pedido.produto_id}"]`);
-            if (optProd) document.getElementById('buscar_produto').value = optProd.value;
+            const opcaoProduto = document.querySelector(
+                `#lista_produtos option[data-id="${pedido.produto_id}"]`
+            );
+
+            if (opcaoProduto) {
+                document.getElementById("buscar_produto").value =
+                    opcaoProduto.value;
+            }
         }
 
     } catch (error) {
         console.error(error);
+        alert("Não foi possível carregar o pedido.");
     }
 }
 
 function configurarEventosDatalist() {
-    document.getElementById('buscar_usuario').addEventListener('input', function() {
-        const inputVal = this.value;
-        const opt = document.querySelector(`#lista_usuarios option[value="${inputVal}"]`);
-        // Captura o valor associando ao ID correto do HTML
-        document.getElementById('editar_usuario_id').value = opt ? opt.getAttribute('data-id') : "";
+    const campoUsuario = document.getElementById("buscar_usuario");
+
+    campoUsuario.addEventListener("input", function () {
+        const valor = this.value;
+        const opcoes = document.querySelectorAll("#lista_usuarios option");
+
+        let idUsuario = "";
+
+        opcoes.forEach(opcao => {
+            if (opcao.value === valor) {
+                idUsuario = opcao.dataset.id;
+            }
+        });
+
+        document.getElementById("editar_usuario_id").value = idUsuario;
     });
 
-    document.getElementById('buscar_produto').addEventListener('input', function() {
-        const inputVal = this.value;
-        const opt = document.querySelector(`#lista_produtos option[value="${inputVal}"]`);
-        // Captura o valor associando ao ID correto do HTML
-        document.getElementById('editar_produto_id').value = opt ? opt.getAttribute('data-id') : "";
+    const campoProduto = document.getElementById("buscar_produto");
+
+    campoProduto.addEventListener("input", function () {
+        const valor = this.value;
+        const opcoes = document.querySelectorAll("#lista_produtos option");
+
+        let idProduto = "";
+
+        opcoes.forEach(opcao => {
+            if (opcao.value === valor) {
+                idProduto = opcao.dataset.id;
+            }
+        });
+
+        document.getElementById("editar_produto_id").value = idProduto;
     });
 }
 
 async function atualizarPedido() {
-    const formQuantidade = parseInt(document.getElementById('editar_quantidade').value);
-    const formTotal = parseFloat(document.getElementById('editar_total').value);
-    const form_usuario_id = parseInt(document.getElementById('editar_usuario_id').value);
-    const form_produto_id = parseInt(document.getElementById('editar_produto_id').value);
+    const quantidade = parseInt(
+        document.getElementById("editar_quantidade").value
+    );
 
-    if (!form_usuario_id || !form_produto_id) {
-        alert("Por favor, selecione um usuário e um produto válidos da lista de sugestões.");
+    const total = parseFloat(
+        document.getElementById("editar_total").value
+    );
+
+    const usuario_id = parseInt(
+        document.getElementById("editar_usuario_id").value
+    );
+
+    const produto_id = parseInt(
+        document.getElementById("editar_produto_id").value
+    );
+
+    if (isNaN(quantidade) || quantidade <= 0) {
+        alert("Informe uma quantidade válida.");
+        return;
+    }
+
+    if (isNaN(total) || total < 0) {
+        alert("Informe um total válido.");
+        return;
+    }
+
+    if (isNaN(usuario_id)) {
+        alert("Selecione um usuário válido.");
+        return;
+    }
+
+    if (isNaN(produto_id)) {
+        alert("Selecione um produto válido.");
         return;
     }
 
     try {
-        const response = await fetch(`${API_URL}/pedidos/${pedido_id}`, {
-            method: "PUT",
-            headers: { "Content-type": "application/json" },
-            body: JSON.stringify({
-                quantidade: formQuantidade,
-                total: formTotal,
-                usuario_id: form_usuario_id,
-                produto_id: form_produto_id
-            })
-        });
+        const response = await fetch(
+            `${API_URL}/pedidos/${pedido_id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    quantidade: quantidade,
+                    total: total,
+                    usuario_id: usuario_id,
+                    produto_id: produto_id
+                })
+            }
+        );
 
-        if (!response.ok) throw new Error("Erro ao atualizar o pedido");
+        if (!response.ok) {
+            const erro = await response.text();
+            throw new Error(
+                erro || "Erro ao atualizar o pedido"
+            );
+        }
+
+        alert("Pedido atualizado com sucesso!");
         window.location.replace("pedidos.html");
+
     } catch (error) {
-        alert("Erro ao salvar: " + error.message);
+        console.error(error);
+        alert("Erro ao salvar o pedido: " + error.message);
     }
 }
 
